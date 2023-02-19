@@ -9,6 +9,11 @@ interface IsuconStackProps extends cdk.StackProps {
   readonly publicKeyMaterial: string;
 }
 
+interface InstanceDetail {
+  readonly name: string;
+  readonly publicIp: string;
+}
+
 export class IsuconStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: IsuconStackProps) {
     super(scope, id, props);
@@ -57,6 +62,8 @@ export class IsuconStack extends cdk.Stack {
       securityGroup.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.tcp(port));
     });
 
+    const instanceDetails: InstanceDetail[] = [];
+
     // ['1', '2', ..., 'bench']
     [
       ...(Array.from(Array(instancesAmount).keys()).map(i => (i + 1).toString())),
@@ -85,6 +92,21 @@ export class IsuconStack extends cdk.Stack {
       const eip = new ec2.CfnEIP(this, `${instanceName}-eip`, {
         instanceId: instance.instanceId,
       });
+
+      instanceDetails.push({
+        name: instanceName,
+        publicIp: eip.attrPublicIp,
+      });
     }); 
+
+    // show ssh config
+    const sshConfig = instanceDetails.map(detail => {
+      return `Host ${detail.name}
+  User ubuntu
+  HostName ${detail.publicIp}
+`;
+    }).join("\n");
+
+    new cdk.CfnOutput(this, `${name}-sshconfig`, { value: sshConfig })
   }
 }
