@@ -38,9 +38,27 @@
     "@aws-cdk/aws-ecs:disableExplicitDeploymentControllerForCircuitBreaker": true,
     "stages": [
       {
+        "name": "isucon8q",
+        "ami": "ami-097b2f6dc28b08370",
+        "instanceType": "t3.micro",
+        "instancesAmount": 3
+      },
+      {
         "name": "isucon9q",
         "ami": "ami-03b1b78bb1da5122f",
         "instanceType": "t3.medium",
+        "instancesAmount": 3
+      },
+      {
+        "name": "isucon10q",
+        "ami": "ami-03bbe60df80bdccc0",
+        "instanceType": "t2.small",
+        "instancesAmount": 3
+      },
+      {
+        "name": "isucon11q",
+        "ami": "ami-0796be4f4814fc3d5",
+        "instanceType": "c5.large",
         "instancesAmount": 3
       }
     ]

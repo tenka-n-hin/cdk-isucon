@@ -16,6 +16,7 @@ const instanceClasses = {
   t3: ec2.InstanceClass.T3,
   m4: ec2.InstanceClass.M4,
   m5: ec2.InstanceClass.M5,
+  c5: ec2.InstanceClass.C5,
 };
 
 const instanceSizes = {
