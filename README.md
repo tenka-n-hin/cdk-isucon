@@ -60,3 +60,9 @@ ISUCON10予選の環境を立ち上げるには、以下のコマンドを実行
 ```
 $ npm run cdk deploy isucon10q
 ```
+
+## ISUCONについて
+
+「ISUCON」は、LINE株式会社の商標または登録商標です。本ツールは「ISUCON」を運営するLINE株式会社とは一切関係ありません。本ツールについての問い合わせは本リポジトリのIssueに起票してください。
+
+ISUCON is a trademark or registered trademark of LINE Corporation. This tool is not related with LINE Corporation. If you need some support, please create an issue in this repository.
