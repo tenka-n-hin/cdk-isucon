@@ -1,14 +1,62 @@
-# Welcome to your CDK TypeScript project
+# cdk-isucon
 
-This is a blank project for CDK development with TypeScript.
+## 概要
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+AWS上にISUCONの練習環境を立ち上げるためのツールです。実行にはAWS CDKを利用しています。
 
-## Useful commands
+## 事前準備
 
-* `npm run build`   compile typescript to js
-* `npm run watch`   watch for changes and compile
-* `npm run test`    perform the jest unit tests
-* `cdk deploy`      deploy this stack to your default AWS account/region
-* `cdk diff`        compare deployed stack with current state
-* `cdk synth`       emits the synthesized CloudFormation template
+### 前提
+
+このツールは以下が整っていることを前提に動作します。
+
+- Node.jsがインストールされている
+    - 少なくとも最新のCDKがサポートしている範囲のバージョンを利用してください
+- AWSアカウントが存在しており、CLIから操作できる状態である
+    - AWSアカウントは専用に払い出すことを強くお勧めします
+    - cdk bootstrapおよびVPC, EC2関連の操作が可能な状態にしてください
+        - あまりお勧めはできませんが、詳しくなければAdministratorAccess PolicyのついたIAM userを用意してください
+
+### ツールの実行環境を整える
+
+以下のコマンドを発行し、実行環境を整えてください。
+
+```
+$ git clone 
+$ cd cdk-isucon
+$ npm i
+```
+
+このツールはEC2のキーペアに公開鍵を登録し、対応する秘密鍵でEC2にSSHログインできるように環境を構築します。公開鍵をアップロードするため、このrepoの直下に公開鍵を `id_ed25519.pub` という名前で配置してください。もしEd25519鍵を持っていない場合は、以下のコマンドで生成してから配置してください。
+
+```
+$ ssh-keygen -t ed25519
+```
+
+もし利用するAWSアカウントで `cdk bootstrap` を実行したことがない場合は、 `cdk bootstrap` コマンドを実行してください。
+
+```
+$ npm run cdk bootstrap
+```
+
+## ISUCONの練習環境を立ち上げる
+
+このツールは各環境をひとつのStackとして扱い、全ての環境分のStackを定義します。立ち上げたい環境に対応するStack名を指定して `cdk diff` や `cdk deploy` を実行する必要があります。もし何も指定せずに実行した場合、全ての環境が同時に立ち上がるので注意してください。
+
+立ち上げられる環境は以下のコマンドで確認できます。
+
+```
+$ npm run cdk ls
+```
+
+例えば、ISUCON10予選の環境を立ち上げる際に作成されるリソースは以下のコマンドで確認できます。
+
+```
+$ npm run cdk diff isucon10q
+```
+
+ISUCON10予選の環境を立ち上げるには、以下のコマンドを実行します。
+
+```
+$ npm run cdk deploy isucon10q
+```
