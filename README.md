@@ -67,6 +67,10 @@ $ npm run cdk deploy isucon10q
 $ npm run cdk destroy
 ```
 
+## 立ち上げに利用しているAMIについて
+
+matsuuさんが作成・運用されている [matsuu/aws-isucon](https://github.com/matsuu/aws-isucon) を利用しています。これらのAMIを利用する場合の免責事項等は、このリポジトリに記載のものに準じます。
+
 ## ISUCONについて
 
 「ISUCON」は、LINE株式会社の商標または登録商標です。本ツールは「ISUCON」を運営するLINE株式会社とは一切関係ありません。本ツールについての問い合わせは本リポジトリのIssueに起票してください。
