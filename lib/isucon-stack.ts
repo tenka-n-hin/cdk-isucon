@@ -2,8 +2,10 @@ import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 
+import { Stage } from './stage';
+
 interface IsuconStackProps extends cdk.StackProps {
-  readonly name: string;
+  readonly stage: Stage;
   readonly publicKeyMaterial: string;
 }
 
@@ -12,11 +14,19 @@ export class IsuconStack extends cdk.Stack {
     super(scope, id, props);
 
     const {
-      name,
+      stage,
       publicKeyMaterial,
     } = props;
 
-    const ami = 'ami-03b1b78bb1da5122f';
+    const {
+      name,
+      machineImage,
+      instanceType,
+      instancesAmount,
+      internalIngressPorts,
+      externalIngressPorts,
+      ebsSize,
+    } = stage;
 
     const vpc = new ec2.Vpc(this, 'vpc', {
       ipAddresses: ec2.IpAddresses.cidr('192.168.0.0/24'),
@@ -35,23 +45,23 @@ export class IsuconStack extends cdk.Stack {
       publicKeyMaterial,
     });
 
-    const instanceType = ec2.InstanceType.of(ec2.InstanceClass.T2, ec2.InstanceSize.SMALL);
-    const machineImage = ec2.MachineImage.genericLinux({ 'ap-northeast-1': ami });
-
     const securityGroup = new ec2.SecurityGroup(this, 'security-group', { vpc });
 
     // internal
-    [80, 3306].forEach(port => {
+    internalIngressPorts.forEach(port => {
       securityGroup.addIngressRule(securityGroup, ec2.Port.tcp(port));
     });
 
     // external
-    [22, 80].forEach(port => {
+    externalIngressPorts.forEach(port => {
       securityGroup.addIngressRule(ec2.Peer.anyIpv4(), ec2.Port.tcp(port));
     });
 
     // ['1', '2', ..., 'bench']
-    [...(Array.from(Array(3).keys()).map(i => (i + 1).toString())), 'bench'].forEach((value, index) => {
+    [
+      ...(Array.from(Array(instancesAmount).keys()).map(i => (i + 1).toString())),
+      'bench',
+    ].forEach((value, index) => {
       const instanceName = `${name}-${value}`;
 
       const instance = new ec2.Instance(this, instanceName, {
@@ -61,7 +71,7 @@ export class IsuconStack extends cdk.Stack {
         blockDevices: [
           {
             deviceName: '/dev/sda1',
-            volume: ec2.BlockDeviceVolume.ebs(20),
+            volume: ec2.BlockDeviceVolume.ebs(ebsSize),
           },
         ],
         instanceName,
