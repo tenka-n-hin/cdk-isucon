@@ -47,7 +47,8 @@
         "name": "isucon9q",
         "ami": "ami-03b1b78bb1da5122f",
         "instanceType": "t3.medium",
-        "instancesAmount": 3
+        "instancesAmount": 3,
+        "internalIngressPorts": [80, 3306, 5555, 7000]
       },
       {
         "name": "isucon10q",
